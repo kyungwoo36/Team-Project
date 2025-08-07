@@ -1,0 +1,31 @@
+dnf update -y
+dnf upgrade -y
+//repository 여러경로를 모아둔 저장소
+dnf install -y epel-release //epel-release라는 저정소 설치
+//패키지 관리 도구로부터 스리카타 설치
+dnf install -y suricata
+suricata -V //version확인
+ip --brief addr //ip확인
+vi /etc/suricata/suricata.yaml //suricata.yam->환경설정파일
+18 주소 변경 16.0/24
+622 interface: enp0s3
+vi /etc/sysconfig/suricata
+="-i enp0s3 으로 수정
+suricata rules update
+suricata -c /etc/suricata/suricata.yaml
+suricata-update
+systemctl status suricata
+systemctl enable --now suricata //enable과 시작을 동시에
+suricata-update enable-source et/open
+suricata-update
+systemctl restart suricata
+vi /etc/suricata/rules/local.rules //local.rules 직접 만들어 커스터마이징
+alert icmp any any -> $HOME_NET any (msg:"DDOS Attak"; sid:1; rev:1;)
+vi /etc/suricata/suricata.yaml
+2189 - /etc/suricata/rules/local.rules
+suricata -T -c /etc/suricata/suricata.yaml -v //-v자세히
+
+dnf istall -y jq
+systemctl restart suricata
+tail -f /var/log/suricata/eve.json
+tail -f /var/log/suricata/eve.json | jq 'select(.event_type=="alert")' // 실시간 로그 탐지
